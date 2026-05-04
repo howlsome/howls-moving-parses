@@ -29,5 +29,7 @@ export default defineConfig({
 		environment: "happy-dom",
 		globals: true,
 		setupFiles: ["./src/test-setup.ts"],
+		// snapshot-schema.test.ts requires a generated snapshot.json — runs separately via pnpm test:snapshot
+		exclude: ["src/__tests__/snapshot-schema.test.ts", "**/node_modules/**"],
 	},
 });
