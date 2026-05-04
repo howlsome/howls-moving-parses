@@ -52,7 +52,7 @@ jobs:
 
       - name: Lighthouse CI
         run: |
-          pnpm dlx serve dist -l 3000 &
+          pnpm vite preview --port 3000 &
           SERVER_PID=$!
           sleep 3
           pnpm dlx lighthouse http://localhost:3000/howls-moving-parses/ \
