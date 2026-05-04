@@ -47,11 +47,11 @@ export function MythicPlusLeaderboardPanel({
 										</DataTable.Cell>
 										<DataTable.Cell>
 											{entry.score > 0 ? (
-												<strong style={{ color: entry.scoreColor || undefined }}>
+												<strong>
 													{entry.score.toLocaleString("en-GB")}
 												</strong>
 											) : (
-												<span style={{ opacity: 0.5 }}>—</span>
+												<span className="empty-state">—</span>
 											)}
 										</DataTable.Cell>
 										<DataTable.Cell>{formatDps(entry.bestPerformance)}</DataTable.Cell>

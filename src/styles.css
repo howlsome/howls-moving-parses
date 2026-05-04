@@ -33,7 +33,7 @@
 	--parse-legendary-color: #ff8000; /* orange — same both modes */
 	--parse-epic-color: light-dark(#a335ee, #c47aff); /* purple */
 	--parse-rare-color: light-dark(#0070dd, #4db8ff); /* blue */
-	--parse-uncommon-color: light-dark(#1dc700, #1eff00); /* bright green */
+	--parse-uncommon-color: light-dark(#2e7d00, #1eff00); /* green — dark for light-mode contrast */
 	--parse-common-color: light-dark(#6e6e6e, #c0c0c0); /* grey — meets 4.5:1 */
 	--parse-poor-color: light-dark(#5c5c5c, #aaaaaa); /* dark grey */
 
