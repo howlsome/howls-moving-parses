@@ -1,0 +1,35 @@
+{
+	"characters": [
+		{
+			"name": "Hxwl",
+			"realm": "Draenor",
+			"region": "eu",
+			"class": "Shaman",
+			"default": true,
+			"specs": [
+				{ "spec": "Elemental", "role": "main" },
+				{ "spec": "Enhancement", "role": "offspec" },
+				{ "spec": "Restoration", "role": "inactive" }
+			]
+		},
+		{
+			"name": "Flukey",
+			"realm": "Draenor",
+			"region": "eu",
+			"class": "Paladin",
+			"default": false,
+			"specs": [
+				{ "spec": "Retribution", "role": "main" },
+				{ "spec": "Protection", "role": "offspec" }
+			]
+		},
+		{
+			"name": "Holiest",
+			"realm": "Draenor",
+			"region": "eu",
+			"class": "Priest",
+			"default": false,
+			"specs": [{ "spec": "Holy", "role": "main" }]
+		}
+	]
+}

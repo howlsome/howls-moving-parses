@@ -1,0 +1,97 @@
+name: Refresh Data & Deploy
+
+on:
+  schedule:
+    - cron: '0 18,19,20,21,22,23 * * *'
+    - cron: '0 0,3,6,9,12,15 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+
+      # Cache raid parse dates — raid log dates don't change once recorded,
+      # so this avoids ~54 WCL encounterRankings queries on most builds.
+      - name: Restore parse-dates cache
+        uses: actions/cache@v4
+        with:
+          path: cache/
+          key: parse-dates-${{ github.ref_name }}
+          restore-keys: parse-dates-
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Fetch data
+        run: pnpm tsx scripts/fetch-data.ts
+        env:
+          WCL_CLIENT_ID: ${{ secrets.WCL_CLIENT_ID }}
+          WCL_CLIENT_SECRET: ${{ secrets.WCL_CLIENT_SECRET }}
+          WCL_CURRENT_RAID_HINT: ${{ secrets.WCL_CURRENT_RAID_HINT }}
+          WCL_CURRENT_MPLUS_HINT: ${{ secrets.WCL_CURRENT_MPLUS_HINT }}
+
+      - name: Validate snapshot
+        run: pnpm test:snapshot
+
+      - name: Build
+        run: pnpm build
+
+      - name: Lighthouse CI
+        run: |
+          pnpm dlx serve dist -l 3000 &
+          SERVER_PID=$!
+          sleep 3
+          pnpm dlx lighthouse http://localhost:3000/howls-moving-parses/ \
+            --chrome-flags="--headless --no-sandbox" \
+            --only-categories=performance,accessibility,best-practices,seo \
+            --output=json \
+            --output-path=lighthouse-report.json \
+            --quiet
+          kill $SERVER_PID
+          node -e "
+            const r = require('./lighthouse-report.json');
+            const scores = {
+              performance: Math.round(r.categories.performance['score'] * 100),
+              accessibility: Math.round(r.categories.accessibility['score'] * 100),
+              'best-practices': Math.round(r.categories['best-practices']['score'] * 100),
+              seo: Math.round(r.categories.seo['score'] * 100),
+            };
+            console.log('Lighthouse scores:', scores);
+            const thresholds = { performance: 95, accessibility: 100, 'best-practices': 100, seo: 100 };
+            const failures = Object.entries(scores).filter(([k, v]) => v < thresholds[k]);
+            if (failures.length) {
+              console.error('FAILED:', failures.map(([k,v]) => k + '=' + v + ' (need ' + thresholds[k] + ')').join(', '));
+              process.exit(1);
+            }
+            console.log('All thresholds met ✓');
+          "
+
+      - name: Upload Lighthouse report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: lighthouse-report.json
+          retention-days: 30
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist

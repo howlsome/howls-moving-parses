@@ -1,0 +1,8 @@
+node_modules
+dist
+.env
+.env-example
+src/data/snapshot.json
+public/build-hash.json
+lighthouse-report.json
+cache/

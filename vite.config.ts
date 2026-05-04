@@ -1,0 +1,33 @@
+import { resolve } from "node:path";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+	base: "/howls-moving-parses/",
+	plugins: [react()],
+	build: {
+		modulePreload: { polyfill: false },
+		rollupOptions: {
+			input: {
+				main: resolve(__dirname, "index.html"),
+				sw: resolve(__dirname, "src/sw.ts"),
+			},
+			output: {
+				entryFileNames: (chunk) => {
+					if (chunk.name === "sw") return "sw.js";
+					return "assets/[name]-[hash].js";
+				},
+				manualChunks: (id) => {
+					if (id.includes("sw.ts")) return undefined;
+					if (id.includes("react") || id.includes("react-dom")) return "react";
+					return undefined;
+				},
+			},
+		},
+	},
+	test: {
+		environment: "happy-dom",
+		globals: true,
+		setupFiles: ["./src/test-setup.ts"],
+	},
+});
