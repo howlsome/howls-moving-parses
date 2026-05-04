@@ -34,8 +34,8 @@
 	--parse-epic-color: light-dark(#a335ee, #c47aff); /* purple */
 	--parse-rare-color: light-dark(#0070dd, #4db8ff); /* blue */
 	--parse-uncommon-color: light-dark(#1dc700, #1eff00); /* bright green */
-	--parse-common-color: light-dark(#888888, #cccccc); /* grey */
-	--parse-poor-color: light-dark(#636363, #888888); /* dark grey */
+	--parse-common-color: light-dark(#6e6e6e, #c0c0c0); /* grey — meets 4.5:1 */
+	--parse-poor-color: light-dark(#5c5c5c, #aaaaaa); /* dark grey */
 
 	/* Meter bar */
 	--meter-bar-bg: light-dark(#e0e0e0, #3a3a3a);
@@ -97,7 +97,7 @@
 }
 
 .updated-date {
-	opacity: 0.65;
+	color: light-dark(#606060, #9e9e9e);
 	white-space: nowrap;
 	line-height: 1;
 }
@@ -126,7 +126,7 @@
 
 .character-meta {
 	font-size: 0.9rem;
-	opacity: 0.65;
+	color: light-dark(#606060, #9e9e9e);
 }
 
 /* ── All Characters — Popover API + CSS Anchor Positioning ───── */
@@ -246,7 +246,7 @@
 .header-score-tier {
 	font-size: 0.8rem;
 	font-weight: 400;
-	opacity: 0.75;
+	color: light-dark(#606060, #9e9e9e);
 }
 
 /* ── Title cutoff row ───────────────────────────────────────── */
@@ -263,7 +263,7 @@
 }
 
 .cutoff-row-label {
-	opacity: 0.8;
+	color: light-dark(#555, #b0b0b0);
 	font-size: 0.8rem;
 }
 
@@ -668,7 +668,7 @@ fieldset.difficulty-toggle button[aria-pressed="true"] {
 /* ── Empty state ────────────────────────────────────────────── */
 
 .empty-state {
-	opacity: 0.6;
+	color: light-dark(#606060, #9e9e9e);
 	font-style: italic;
 	margin: 0.5rem 0;
 }

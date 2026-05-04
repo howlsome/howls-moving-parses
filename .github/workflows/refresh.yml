@@ -71,7 +71,8 @@ jobs:
               seo: Math.round(r.categories.seo['score'] * 100),
             };
             console.log('Lighthouse scores:', scores);
-            const thresholds = { performance: 95, accessibility: 100, 'best-practices': 100, seo: 100 };
+            // SEO intentionally excluded — site uses noindex/nofollow (private dashboard)
+            const thresholds = { performance: 95, accessibility: 100, 'best-practices': 100 };
             const failures = Object.entries(scores).filter(([k, v]) => v < thresholds[k]);
             if (failures.length) {
               console.error('FAILED:', failures.map(([k,v]) => k + '=' + v + ' (need ' + thresholds[k] + ')').join(', '));
