@@ -329,6 +329,6 @@ export const ALL_SPECS: SpecDefinition[] = [
 	},
 ];
 
-if (ALL_SPECS.length !== 39) {
-	throw new Error(`ALL_SPECS must contain 39 specs, found ${ALL_SPECS.length}`);
+if (ALL_SPECS.length !== 40) {
+	throw new Error(`ALL_SPECS must contain 40 specs, found ${ALL_SPECS.length}`);
 }
