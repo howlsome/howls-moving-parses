@@ -2,14 +2,14 @@ import { describe, expect, it } from "vitest";
 import { ALL_SPECS } from "../../src/data/specs.js";
 
 describe("ALL_SPECS", () => {
-	it("has exactly 39 specs", () => {
-		expect(ALL_SPECS).toHaveLength(39);
+	it("has exactly 40 specs", () => {
+		expect(ALL_SPECS).toHaveLength(40);
 	});
 
 	it("has no duplicate slugs", () => {
 		const slugs = ALL_SPECS.map((s) => s.specSlug);
 		const unique = new Set(slugs);
-		expect(unique.size).toBe(39);
+		expect(unique.size).toBe(40);
 	});
 
 	it("all slugs match pattern [a-z]+-[a-z-]+", () => {
