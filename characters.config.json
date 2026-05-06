@@ -1,15 +1,15 @@
 {
 	"characters": [
 		{
-			"name": "Hxwl",
+			"name": "Eyeballshurt",
 			"realm": "Draenor",
 			"region": "eu",
-			"class": "Shaman",
+			"class": "Demon Hunter",
 			"default": true,
 			"specs": [
-				{ "spec": "Elemental", "role": "main" },
-				{ "spec": "Enhancement", "role": "offspec" },
-				{ "spec": "Restoration", "role": "inactive" }
+				{ "spec": "Devourer", "role": "inactive" },
+				{ "spec": "Havoc", "role": "main" },
+				{ "spec": "Vengeance", "role": "inactive" }
 			]
 		},
 		{
@@ -19,8 +19,9 @@
 			"class": "Paladin",
 			"default": false,
 			"specs": [
-				{ "spec": "Retribution", "role": "main" },
-				{ "spec": "Protection", "role": "offspec" }
+				{ "spec": "Holy", "role": "inactive" },
+				{ "spec": "Protection", "role": "offspec" },
+				{ "spec": "Retribution", "role": "main" }
 			]
 		},
 		{
@@ -29,7 +30,23 @@
 			"region": "eu",
 			"class": "Priest",
 			"default": false,
-			"specs": [{ "spec": "Holy", "role": "main" }]
+			"specs": [
+				{ "spec": "Discipline", "role": "inactive" },
+				{ "spec": "Holy", "role": "main" },
+				{ "spec": "Shadow", "role": "inactive" }
+			]
+		},
+		{
+			"name": "Hxwl",
+			"realm": "Draenor",
+			"region": "eu",
+			"class": "Shaman",
+			"default": true,
+			"specs": [
+				{ "spec": "Elemental", "role": "main" },
+				{ "spec": "Enhancement", "role": "inactive" },
+				{ "spec": "Restoration", "role": "offspec" }
+			]
 		}
 	]
 }
