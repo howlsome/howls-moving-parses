@@ -4,7 +4,7 @@
 			"name": "Eyeballshurt",
 			"realm": "Draenor",
 			"region": "eu",
-			"class": "Demon Hunter",
+			"class": "DemonHunter",
 			"default": false,
 			"specs": [
 				{ "spec": "Devourer", "role": "inactive" },
