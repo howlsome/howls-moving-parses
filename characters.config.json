@@ -5,7 +5,7 @@
 			"realm": "Draenor",
 			"region": "eu",
 			"class": "Demon Hunter",
-			"default": true,
+			"default": false,
 			"specs": [
 				{ "spec": "Devourer", "role": "inactive" },
 				{ "spec": "Havoc", "role": "main" },
