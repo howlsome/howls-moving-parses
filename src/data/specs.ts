@@ -58,6 +58,13 @@ export const ALL_SPECS: SpecDefinition[] = [
 	},
 	// Demon Hunter
 	{
+		specSlug: "devourer-demon-hunter",
+		specName: "Devourer",
+		className: "DemonHunter",
+		classDisplayName: "Demon Hunter",
+		role: "dps",
+	},
+	{
 		specSlug: "havoc-demon-hunter",
 		specName: "Havoc",
 		className: "DemonHunter",
