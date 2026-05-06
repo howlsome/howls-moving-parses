@@ -19,7 +19,7 @@ describe("SpecSelect", () => {
 	it("renders 39 options total", () => {
 		render(<SpecSelect />, { wrapper: Wrapper });
 		const options = screen.getAllByRole("option");
-		expect(options).toHaveLength(39);
+		expect(options).toHaveLength(40);
 	});
 
 	it("has optgroups for each class", () => {
