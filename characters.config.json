@@ -41,7 +41,7 @@
 			"realm": "Draenor",
 			"region": "eu",
 			"class": "Monk",
-			"default": true,
+			"default": false,
 			"specs": [
 				{ "spec": "Brewmaster", "role": "main" },
 				{ "spec": "Mistweaver", "role": "inactive" },
