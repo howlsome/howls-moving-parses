@@ -111,7 +111,7 @@ function AppInner() {
 			<footer className="site-footer">
 				<small>Made with love by howlsome</small>
 				<small className="footer-schedule">
-					Auto-updates hourly 19:00–00:00 · every 6 hrs otherwise (BST)
+					Updates 4 times a day
 				</small>
 			</footer>
 		</div>
