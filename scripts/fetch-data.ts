@@ -307,8 +307,10 @@ export async function getCurrentRaidZoneId(token: string): Promise<number> {
 	const zones = data.worldData.zones;
 	const hint = process.env.WCL_CURRENT_RAID_HINT;
 
-	// Filter to non-frozen, non-M+ zones
-	const candidates = zones.filter((z) => z.frozen === false && !z.name.includes("Mythic+"));
+	// Filter to non-frozen, non-M+, non-PTR zones
+	const candidates = zones.filter(
+		(z) => z.frozen === false && !z.name.includes("Mythic+") && !z.name.includes("(PTR)"),
+	);
 
 	if (candidates.length === 0) {
 		throw new Error("No non-frozen raid zones found on WarcraftLogs");
@@ -317,6 +319,11 @@ export async function getCurrentRaidZoneId(token: string): Promise<number> {
 	let chosen: WclZone;
 	if (hint) {
 		const hinted = candidates.find((z) => z.name.toLowerCase().includes(hint.toLowerCase()));
+		if (!hinted) {
+			console.warn(
+				`  WCL_CURRENT_RAID_HINT "${hint}" matched no zone — falling back to highest ID`,
+			);
+		}
 		chosen = hinted ?? candidates.reduce((a, b) => (b.id > a.id ? b : a));
 	} else {
 		chosen = candidates.reduce((a, b) => (b.id > a.id ? b : a));
