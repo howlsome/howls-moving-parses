@@ -37,18 +37,6 @@
 			]
 		},
 		{
-			"name": "Hxul",
-			"realm": "Draenor",
-			"region": "eu",
-			"class": "Monk",
-			"default": false,
-			"specs": [
-				{ "spec": "Brewmaster", "role": "main" },
-				{ "spec": "Mistweaver", "role": "inactive" },
-				{ "spec": "Windwalker", "role": "inactive" }
-			]
-		},
-		{
 			"name": "Hxwl",
 			"realm": "Draenor",
 			"region": "eu",
