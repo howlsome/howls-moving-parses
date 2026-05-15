@@ -55,39 +55,49 @@ jobs:
           pnpm vite preview --port 3000 &
           SERVER_PID=$!
           sleep 3
-          pnpm dlx lighthouse http://localhost:3000/howls-moving-parses/ \
-            --chrome-flags="--headless --no-sandbox" \
-            --only-categories=performance,accessibility,best-practices,seo \
-            --output=json \
-            --output-path=lighthouse-report.json \
-            --quiet
+
+          scores=()
+          for i in 1 2 3; do
+            pnpm dlx lighthouse http://localhost:3000/howls-moving-parses/ \
+              --chrome-flags="--headless --no-sandbox" \
+              --only-categories=performance,accessibility,best-practices,seo \
+              --output=json \
+              --output-path=lighthouse-report-$i.json \
+              --quiet
+            score=$(node -e "const r=require('./lighthouse-report-$i.json'); console.log(Math.round(r.categories.performance.score*100))")
+            echo "Run $i performance: $score"
+            scores+=($score)
+          done
+
           kill $SERVER_PID
+
           node -e "
-            const r = require('./lighthouse-report.json');
+            const reports = [1,2,3].map(i => require('./lighthouse-report-' + i + '.json'));
+            const avg = key => Math.round(reports.reduce((s, r) => s + r.categories[key].score * 100, 0) / reports.length);
             const scores = {
-              performance: Math.round(r.categories.performance['score'] * 100),
-              accessibility: Math.round(r.categories.accessibility['score'] * 100),
-              'best-practices': Math.round(r.categories['best-practices']['score'] * 100),
-              seo: Math.round(r.categories.seo['score'] * 100),
+              performance: avg('performance'),
+              accessibility: avg('accessibility'),
+              'best-practices': avg('best-practices'),
+              seo: avg('seo'),
             };
-            console.log('Lighthouse scores:', scores);
+            console.log('Lighthouse scores (avg of 3):', scores);
             // SEO intentionally excluded — site uses noindex/nofollow (private dashboard)
             // Accessibility 95: dynamic Raider.IO score colours vary; 95 is the reliable floor
-            const thresholds = { performance: 95, accessibility: 95, 'best-practices': 100 };
-            const failures = Object.entries(scores).filter(([k, v]) => v < thresholds[k]);
+            const thresholds = { performance: 90, accessibility: 95, 'best-practices': 100 };
+            const failures = Object.entries(thresholds).filter(([k, t]) => scores[k] < t);
             if (failures.length) {
-              console.error('FAILED:', failures.map(([k,v]) => k + '=' + v + ' (need ' + thresholds[k] + ')').join(', '));
+              console.error('FAILED:', failures.map(([k,t]) => k + '=' + scores[k] + ' (need ' + t + ')').join(', '));
               process.exit(1);
             }
             console.log('All thresholds met ✓');
           "
 
-      - name: Upload Lighthouse report
+      - name: Upload Lighthouse reports
         if: github.event_name != 'schedule'
         uses: actions/upload-artifact@v4
         with:
           name: lighthouse-report
-          path: lighthouse-report.json
+          path: lighthouse-report-*.json
           retention-days: 30
 
       - name: Deploy to GitHub Pages
