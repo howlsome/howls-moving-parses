@@ -299,12 +299,24 @@ async function wclQuery<T = Record<string, unknown>>(
  * @throws If no active raid zone is found
  */
 export async function getCurrentRaidZoneId(token: string): Promise<number> {
+	const pinnedId = process.env.WCL_CURRENT_RAID_ZONE_ID
+		? Number(process.env.WCL_CURRENT_RAID_ZONE_ID)
+		: null;
+
 	const data = await wclQuery<{ worldData: { zones: WclZone[] } }>(
 		token,
 		"{ worldData { zones { id name frozen } } }",
 	);
 
 	const zones = data.worldData.zones;
+
+	if (pinnedId !== null) {
+		const pinned = zones.find((z) => z.id === pinnedId);
+		if (!pinned) throw new Error(`WCL_CURRENT_RAID_ZONE_ID ${pinnedId} not found in zone list`);
+		console.log(`✓ Raid zone (pinned): "${pinned.name}" (ID ${pinned.id})`);
+		return pinned.id;
+	}
+
 	const hint = process.env.WCL_CURRENT_RAID_HINT;
 
 	// Filter to non-frozen, non-M+, non-PTR zones

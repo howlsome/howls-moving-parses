@@ -40,6 +40,7 @@ jobs:
         env:
           WCL_CLIENT_ID: ${{ secrets.WCL_CLIENT_ID }}
           WCL_CLIENT_SECRET: ${{ secrets.WCL_CLIENT_SECRET }}
+          WCL_CURRENT_RAID_ZONE_ID: ${{ secrets.WCL_CURRENT_RAID_ZONE_ID }}
           WCL_CURRENT_RAID_HINT: ${{ secrets.WCL_CURRENT_RAID_HINT }}
           WCL_CURRENT_MPLUS_HINT: ${{ secrets.WCL_CURRENT_MPLUS_HINT }}
 
