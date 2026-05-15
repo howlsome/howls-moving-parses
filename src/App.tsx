@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { CharacterSelect } from "./components/chrome/CharacterSelect.js";
 import { NewBuildBanner } from "./components/chrome/NewBuildBanner.js";
+import { LandingPage } from "./components/pages/LandingPage.js";
 import { CharactersSummaryPanel } from "./components/panels/CharactersSummaryPanel.js";
 import { LogPerformancePanel } from "./components/panels/LogPerformancePanel.js";
 import { MythicPlusLeaderboardPanel } from "./components/panels/MythicPlusLeaderboardPanel.js";
@@ -18,7 +19,25 @@ import snapshotRaw from "./data/snapshot.json";
 
 const snapshot = snapshotRaw as unknown as Snapshot;
 
-function AppInner() {
+const STORAGE_KEY = "hmp.defaultCharacter";
+
+function getStoredCharacter(characters: CharacterData[]): CharacterData | null {
+	try {
+		const name = localStorage.getItem(STORAGE_KEY);
+		if (!name) return null;
+		return characters.find((c) => c.name === name) ?? null;
+	} catch {
+		return null;
+	}
+}
+
+function saveCharacter(name: string): void {
+	try {
+		localStorage.setItem(STORAGE_KEY, name);
+	} catch {}
+}
+
+function AppInner({ onSelectCharacter }: { onSelectCharacter: (name: string) => void }) {
 	const { selectedCharacterName, setSelectedCharacter } = useAppState();
 
 	const [newBuildVisible, setNewBuildVisible] = useState(false);
@@ -48,7 +67,10 @@ function AppInner() {
 
 	function handleSelectCharacter(name: string) {
 		const char = snapshot.characters.find((c: CharacterData) => c.name === name);
-		if (char) setSelectedCharacter(char.name, char.mainSpecSlug);
+		if (char) {
+			setSelectedCharacter(char.name, char.mainSpecSlug);
+			onSelectCharacter(char.name);
+		}
 	}
 
 	return (
@@ -110,9 +132,7 @@ function AppInner() {
 
 			<footer className="site-footer">
 				<small>Made with love by howlsome</small>
-				<small className="footer-schedule">
-					Updates 4 times a day
-				</small>
+				<small className="footer-schedule">Updates 4 times a day</small>
 			</footer>
 		</div>
 	);
@@ -120,18 +140,29 @@ function AppInner() {
 
 /** Root application component. Imports snapshot.json and provides context. */
 export default function App() {
-	const defaultChar =
-		snapshot.characters.find((c: CharacterData) => c.isDefault) ??
-		snapshot.characters[0] ??
-		({ name: "", mainSpecSlug: "" } as CharacterData);
+	const [storedChar, setStoredChar] = useState<CharacterData | null>(() =>
+		getStoredCharacter(snapshot.characters),
+	);
+
+	if (storedChar === null) {
+		return (
+			<LandingPage
+				characters={snapshot.characters}
+				onSelect={(char) => {
+					saveCharacter(char.name);
+					setStoredChar(char);
+				}}
+			/>
+		);
+	}
 
 	return (
 		<AppStateProvider
-			defaultCharacterName={defaultChar.name}
-			defaultCharacterMainSpecSlug={defaultChar.mainSpecSlug}
-			defaultMetaSpecSlug={defaultChar.mainSpecSlug}
+			defaultCharacterName={storedChar.name}
+			defaultCharacterMainSpecSlug={storedChar.mainSpecSlug}
+			defaultMetaSpecSlug={storedChar.mainSpecSlug}
 		>
-			<AppInner />
+			<AppInner onSelectCharacter={saveCharacter} />
 		</AppStateProvider>
 	);
 }
