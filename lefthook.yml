@@ -2,7 +2,7 @@ commit-msg:
   commands:
     conventional-commit:
       run: |
-        MSG=$(cat {1})
+        MSG=$(cat "{1}")
         PATTERN='^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)(\([a-z0-9-]+\))?: .+'
         if ! echo "$MSG" | grep -qE "$PATTERN"; then
           echo ""
