@@ -5,17 +5,39 @@
  * since the last known value, posts a NEW_BUILD_AVAILABLE message to all open
  * clients. App.tsx listens for this and shows the dismissible banner.
  *
- * On activate, the current hash is read and stored as the baseline.
- * The module-level variable resets when the SW is killed (after ~30 seconds of
- * inactivity), so on next wake-up activate re-reads the hash as the new baseline.
+ * The known hash is persisted to Cache Storage so it survives SW suspension
+ * (the browser kills idle SWs after ~30s). On re-activation, checkForNewBuild()
+ * reads the persisted hash and compares it against the live hash, catching any
+ * build that landed while the SW was dormant.
  */
 
 declare const self: ServiceWorkerGlobalScope;
 
 const BUILD_HASH_URL = "/howls-moving-parses/build-hash.json";
 const POLL_INTERVAL_MS = 300_000; // 5 minutes
+const HASH_CACHE_NAME = "build-hash-v1";
+const HASH_CACHE_KEY = new Request("/__hash__");
 
-let knownHash: string | null = null;
+async function getStoredHash(): Promise<string | null> {
+	try {
+		const cache = await caches.open(HASH_CACHE_NAME);
+		const res = await cache.match(HASH_CACHE_KEY);
+		if (!res) return null;
+		const data = (await res.json()) as { hash: string };
+		return data.hash ?? null;
+	} catch {
+		return null;
+	}
+}
+
+async function storeHash(hash: string): Promise<void> {
+	try {
+		const cache = await caches.open(HASH_CACHE_NAME);
+		await cache.put(HASH_CACHE_KEY, new Response(JSON.stringify({ hash })));
+	} catch {
+		// ignore storage errors
+	}
+}
 
 async function fetchCurrentHash(): Promise<string | null> {
 	try {
@@ -32,13 +54,15 @@ async function checkForNewBuild() {
 	const currentHash = await fetchCurrentHash();
 	if (!currentHash) return;
 
-	if (knownHash === null) {
-		knownHash = currentHash;
+	const storedHash = await getStoredHash();
+
+	if (storedHash === null) {
+		await storeHash(currentHash);
 		return;
 	}
 
-	if (currentHash !== knownHash) {
-		knownHash = currentHash;
+	if (currentHash !== storedHash) {
+		await storeHash(currentHash);
 		const clients = await self.clients.matchAll({ type: "window" });
 		for (const client of clients) {
 			client.postMessage({ type: "NEW_BUILD_AVAILABLE" });
@@ -48,8 +72,7 @@ async function checkForNewBuild() {
 
 self.addEventListener("activate", (event) => {
 	event.waitUntil(
-		fetchCurrentHash().then((hash) => {
-			knownHash = hash;
+		checkForNewBuild().then(() => {
 			setInterval(checkForNewBuild, POLL_INTERVAL_MS);
 		}),
 	);
