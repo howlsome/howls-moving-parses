@@ -47,6 +47,30 @@
 				{ "spec": "Enhancement", "role": "inactive" },
 				{ "spec": "Restoration", "role": "offspec" }
 			]
+		},
+		{
+			"name": "Raem",
+			"realm": "Doomhammer",
+			"region": "eu",
+			"class": "Priest",
+			"default": true,
+			"specs": [
+				{ "spec": "Discipline", "role": "inactive" },
+				{ "spec": "Holy", "role": "inactive" },
+				{ "spec": "Shadow", "role": "main" }
+			]
+		},
+		{
+			"name": "Zyálayna",
+			"realm": "Draenor",
+			"region": "eu",
+			"class": "Hunter",
+			"default": true,
+			"specs": [
+				{ "spec": "Beastmastery", "role": "inactive" },
+				{ "spec": "Markmanship", "role": "inactive" },
+				{ "spec": "Survival", "role": "main" }
+			]
 		}
 	]
 }
