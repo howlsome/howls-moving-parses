@@ -65,7 +65,7 @@
 			"realm": "Draenor",
 			"region": "eu",
 			"class": "Hunter",
-			"default": true,
+			"default": false,
 			"specs": [
 				{ "spec": "Beast Mastery", "role": "inactive" },
 				{ "spec": "Marksmanship", "role": "inactive" },
